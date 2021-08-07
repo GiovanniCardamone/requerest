@@ -1,0 +1,48 @@
+{
+  "name": "http-utils-client",
+  "version": "0.0.1",
+  "description": "browser library to organize http client",
+  "main": "index.js",
+  "private": false,
+  "prettier": "@giovannicardamone/prettier-config",
+  "eslintConfig": {
+    "extends": "@giovannicardamone/eslint-config"
+  },
+  "scripts": {
+    "test": "nyc ts-mocha 'tests/**.test.ts'",
+    "lint": "eslint",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "docs": "docsify generate docs",
+    "docs:watch": "docsify serve docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GiovanniCardamone/http-utils-client.git"
+  },
+  "author": "Giovanni Cardamone <g.cardamone2@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GiovanniCardamone/http-utils-client/issues"
+  },
+  "homepage": "https://github.com/GiovanniCardamone/http-utils-client#readme",
+  "devDependencies": {
+    "@giovannicardamone/eslint-config": "^0.4.2",
+    "@giovannicardamone/prettier-config": "^0.1.1",
+    "@types/chai": "^4.2.21",
+    "@types/mocha": "^9.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.29.0",
+    "@typescript-eslint/parser": "^4.29.0",
+    "chai": "^4.3.4",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "husky": "^7.0.1",
+    "mocha": "^8.4.0",
+    "nyc": "^15.1.0",
+    "ts-mocha": "^8.0.0",
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "http-class": "^0.2.1"
+  }
+}
