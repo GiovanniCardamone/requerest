@@ -10,6 +10,22 @@ describe('urlBuilder', () => {
 		done()
 	})
 
+	it('baseUrl with query', (done) => {
+		const url = urlBuilder('http://localhost')
+
+		expect(url({ foo: 'bar' })).to.be.equal('http://localhost?foo=bar')
+
+		done()
+	})
+
+	it('baseUrl final / with query', (done) => {
+		const url = urlBuilder('http://localhost/')
+
+		expect(url({ foo: 'bar' })).to.be.equal('http://localhost?foo=bar')
+
+		done()
+	})
+
 	it('baseUrl with path', (done) => {
 		const url = urlBuilder('http://localhost')
 
@@ -43,7 +59,7 @@ describe('urlBuilder', () => {
 	})
 
 	it('url with query string', (done) => {
-		const url = urlBuilder('http://localhost/')
+		const url = urlBuilder('http://localhost')
 
 		expect(url('foo', { name: 'bar' })).to.be.equal(
 			'http://localhost/foo?name=bar'
@@ -53,7 +69,7 @@ describe('urlBuilder', () => {
 	})
 
 	it('url with query number', (done) => {
-		const url = urlBuilder('http://localhost/')
+		const url = urlBuilder('http://localhost')
 
 		expect(url('foo', { name: 42 })).to.be.equal('http://localhost/foo?name=42')
 
@@ -61,7 +77,7 @@ describe('urlBuilder', () => {
 	})
 
 	it('url with query boolean', (done) => {
-		const url = urlBuilder('http://localhost/')
+		const url = urlBuilder('http://localhost')
 
 		expect(url('foo', { name: true })).to.be.equal(
 			'http://localhost/foo?name=true'
@@ -99,7 +115,7 @@ describe('urlBuilder', () => {
 	it('url with query invalid type', (done) => {
 		const url = urlBuilder('http://localhost/')
 
-		// @ts-expect-error
+		// @ts-expect-error date isn't parsable by library
 		expect(() => url('foo', { name: new Date() })).to.throw(TypeError)
 
 		done()

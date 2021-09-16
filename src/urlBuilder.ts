@@ -4,17 +4,23 @@ export type BaseUrl = `${Protocol}://${string}`
 export type Query = { [key: string]: QueryValue | QueryValue[] }
 export type QueryValue = string | number | boolean
 
-function joinPath(base: string, path?: string) {
-	return path === undefined
-		? base
-		: base.endsWith('/') && path.startsWith('/')
-		? `${base}${path.substr(1)}`
-		: base.endsWith('/') || path.startsWith('/')
-		? `${base}${path}`
-		: `${base}/${path}`
+export type Url = `${BaseUrl}${string}`
+
+function clearBase(base: string): Url {
+	return (base.endsWith('/') ? base.substr(0, base.length - 1) : base) as Url
 }
 
-function createQuery(query?: Query) {
+function joinPath(base: string, path?: string): Url {
+	const b = clearBase(base)
+
+	return path === undefined
+		? b
+		: path.startsWith('/')
+		? `${b}${path}`
+		: `${b}/${path}`
+}
+
+function createQuery(query?: Query): string {
 	return query === undefined
 		? ''
 		: Object.entries(query).reduce((acc, [key, value]) => {
@@ -47,7 +53,13 @@ function joinQuery(prev: string, curr: string) {
 }
 
 export default function urlBuilder(baseUrl: BaseUrl) {
-	return function url(path?: string, query?: Query) {
-		return `${joinPath(baseUrl, path)}${createQuery(query)}`
+	return function url(path?: string | Query, query?: Query) {
+		return path === undefined
+			? joinPath(baseUrl)
+			: typeof path === 'string'
+			? (`${joinPath(baseUrl, path)}${createQuery(query)}` as Url)
+			: typeof path === 'object'
+			? (`${joinPath(baseUrl)}${createQuery(path)}` as Url)
+			: (`${joinPath(baseUrl)}${createQuery(query)}` as Url)
 	}
 }
