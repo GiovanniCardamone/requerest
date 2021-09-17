@@ -88,9 +88,11 @@ export default {
 ```
 
 ```javascript
+// client usage
 import client from './client'
 
 const users = await client.users.list()
+await users.create({ id: 'foo', name: 'Foo', surname: 'Bar' })
 
 const foo = await client.user('foo')
 
