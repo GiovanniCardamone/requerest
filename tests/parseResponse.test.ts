@@ -1,5 +1,6 @@
 import { expect } from 'chai'
-import RequeRest, { parseResponse } from '../src'
+import RequeRest from '../src'
+import { parseResponse } from '../src/response'
 
 describe('parseResponse', () => {
 	describe('errors', () => {

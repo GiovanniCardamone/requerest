@@ -1,8 +1,6 @@
-import {
-	MissingDecoderError,
-	MissingEncoderError,
-	UnparsableResponseError,
-} from './errors'
+import { MissingDecoderError, MissingEncoderError } from './errors'
+import { parseResponse } from './response'
+import { buildUrl, clearBaseUrl, clearPath } from './url'
 
 const f =
 	typeof window !== 'undefined'
@@ -25,19 +23,19 @@ export interface RequeRestOptions {
 	}
 }
 
-interface HeadersObject {
+export interface HeadersObject {
 	[key: string]: string | number
 }
 
-interface QueryObject {
+export interface QueryObject {
 	[key: string]: QueryParamValue | QueryParamArrayValue
 }
 
-type QueryParamValue = string | number | boolean | null | undefined
-type QueryParamArrayValue = Array<QueryParamValue>
+export type QueryParamValue = string | number | boolean | null | undefined
+export type QueryParamArrayValue = Array<QueryParamValue>
 
-type BaseUrl = `http://${string}` | `https://${string}`
-type UrlPath = string
+export type BaseUrl = `http://${string}` | `https://${string}`
+export type UrlPath = string
 
 const defaultEncoders: RequeRestOptions['encoders'] = {
 	text: String,
@@ -142,108 +140,4 @@ export default class RequeRest {
 	// post<T>(path: UrlPath, body: unknown): T {}
 	// delete<T>(path: UrlPath, body: unknown): T {}
 	// call<T>(method: string, path: UrlPath, body: unknkiwn): T {}
-}
-
-export function buildUrl(
-	requerest: RequeRest,
-	path?: string,
-	query?: QueryObject
-): string {
-	return `${clearBaseUrl(requerest.baseUrl)}${clearPath(path)}${buildQuery(
-		requerest,
-		query
-	)}`
-}
-
-function clearBaseUrl(baseUrl: string) {
-	return baseUrl.endsWith('/') ? baseUrl.substr(0, baseUrl.length - 1) : baseUrl
-}
-
-function clearPath(path?: string) {
-	return typeof path === 'undefined'
-		? ''
-		: path.startsWith('/')
-		? path
-		: `/${path}`
-}
-
-export function buildQuery(requerest: RequeRest, query?: QueryObject): string {
-	if (query === undefined || Object.keys(query).length === 0) return ''
-
-	const q = Object.entries(query).reduce<string>(
-		(a, [k, v]) =>
-			`${a}${a.length === 0 ? '?' : '&'}${encodeQueryParam(
-				requerest.options.queryArrayEncoding,
-				k,
-				v
-			)}`,
-		''
-	)
-
-	return q.length === 1 ? '' : q
-}
-
-function encodeQueryParam(
-	arrayEncoding: RequeRestOptions['queryArrayEncoding'],
-	k: string,
-	v: QueryParamValue | QueryParamArrayValue
-): string {
-	return Array.isArray(v)
-		? encodeQueryParamArrayValue(arrayEncoding, k, v)
-		: encodeQueryParamValue(k, v)
-}
-
-function encodeQueryParamValue(k: string, v: QueryParamValue): string {
-	return v !== undefined ? `${k}=${String(v)}` : ''
-}
-
-function encodeQueryParamArrayValue(
-	arrayEncoding: RequeRestOptions['queryArrayEncoding'],
-	k: string,
-	v: QueryParamArrayValue
-): string {
-	switch (arrayEncoding) {
-		default:
-		case 'none': {
-			return v
-				.filter((e) => e !== undefined)
-				.map((e) => `${k}=${e}`)
-				.join('&')
-		}
-
-		case 'brackets': {
-			return v
-				.filter((e) => e !== undefined)
-				.map((e) => `${k}[]=${String(e)}`)
-				.join('&')
-		}
-
-		case 'comma': {
-			return `${k}=${v
-				.filter((e) => e !== undefined)
-				.map(String)
-				.join(',')}`
-		}
-	}
-}
-
-export async function parseResponse<T>(
-	requerest: RequeRest,
-	response: Response
-): Promise<T> {
-	if (response.status >= 200 && response.status < 300) {
-		if (
-			requerest.options.decode === undefined ||
-			response.headers
-				.get('content-type')
-				?.toLowerCase()
-				.startsWith(requerest.options.decode?.toLocaleLowerCase()) === false
-		) {
-			throw new UnparsableResponseError(requerest, response)
-		}
-
-		return requerest.options.decoders[requerest.options.decode] as unknown as T
-	}
-
-	throw new Error(await response.text())
 }

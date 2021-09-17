@@ -1,5 +1,6 @@
 import { expect } from 'chai'
-import RequeRest, { buildUrl } from '../src'
+import RequeRest from '../src'
+import { buildUrl } from '../src/url'
 
 describe('buildUrl', () => {
 	it('no path', async () => {

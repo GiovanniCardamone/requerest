@@ -1,5 +1,6 @@
 import { expect } from 'chai'
-import RequeRest, { buildQuery } from '../src'
+import RequeRest from '../src'
+import { buildQuery } from '../src/query'
 
 describe('buildQuery', () => {
 	const http = new RequeRest('http://localhost')
