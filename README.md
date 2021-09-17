@@ -52,7 +52,7 @@ const fooAvatar = await userResource.decode('image/png').get('foo/avatar') // GE
 const fooPosts = await userPostResource(foo.id).get() // GET http://localhosts/users/foo/posts { Authorization: 'Bearer my.bearer.token' }
 ```
 
-## :: Better Usage
+## :artificial_satellite: Better Usage
 
 ```javascript
 // a module that contains the client
