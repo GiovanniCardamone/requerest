@@ -1,5 +1,5 @@
 {
-  "name": "http-utils-client",
+  "name": "requerest",
   "version": "0.0.1",
   "description": "browser library to organize http client",
   "main": "index.js",
@@ -15,7 +15,8 @@
     "build": "tsc",
     "build:watch": "tsc --watch",
     "docs": "docsify generate docs",
-    "docs:watch": "docsify serve docs"
+    "docs:watch": "docsify serve docs",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -34,6 +35,8 @@
     "@giovannicardamone/prettier-config": "^0.1.1",
     "@types/chai": "^4.2.21",
     "@types/mocha": "^9.0.0",
+    "@types/node": "^16.9.2",
+    "@types/sinon": "^10.0.2",
     "@typescript-eslint/eslint-plugin": "^4.29.0",
     "@typescript-eslint/parser": "^4.29.0",
     "chai": "^4.3.4",
@@ -48,6 +51,7 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "http-class": "^0.3.1"
+    "http-class": "^0.3.1",
+    "sinon": "^11.1.2"
   }
 }

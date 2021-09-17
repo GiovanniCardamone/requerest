@@ -3,9 +3,9 @@
   "extension": [".ts"],
   "check-coverage": true,
   "include": ["src/**"],
-  "statements": 90,
-  "branches": 70,
-  "functions": 95,
-  "lines": 90,
+  "statements": 50,
+  "branches": 50,
+  "functions": 50,
+  "lines": 50,
   "reporter": ["text-summary", "text", "lcovonly"]
 }
