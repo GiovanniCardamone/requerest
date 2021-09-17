@@ -52,6 +52,37 @@ const fooAvatar = await userResource.decode('image/png').get('foo/avatar') // GE
 const fooPosts = await userPostResource(foo.id).get() // GET http://localhosts/users/foo/posts { Authorization: 'Bearer my.bearer.token' }
 ```
 
+## :: Better Usage
+
+```javascript
+// a module that contains the client
+
+const client = new RequeRest('http://localhost')
+const clientBearer = client.with(() => {
+  Authroization: window.localStorage.getItem('bearerToken')
+}) // or whatever logic is in your app
+
+const userResource = clientBearer.path('users')
+
+export default {
+  users: {
+    get: (query) => userResource.query(query).get(),
+    post: (user) => userResource.post(user),
+  },
+  user: (id) => ({
+    get: () => userResource.path(id).get(),
+    patch: (data) => userResource.path(id).patch(data),
+    delete: () => userResource.path(id).delete(),
+    postsResource: {
+      // default values
+      get: (query = { showDeleted: true }) =>
+        userResource.path(id).path('posts').query(query).get(),
+      post: (data) => userResource.path(id).path('posts').post(post),
+    },
+  }),
+}
+```
+
 ## :cool: User Requerest in NodeJs
 
 RequeRest is using `fetch` interface, so to use in node you have
