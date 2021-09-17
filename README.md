@@ -59,14 +59,14 @@ const fooPosts = await userPostResource(foo.id).get() // GET http://localhosts/u
 
 const client = new RequeRest('http://localhost')
 const clientBearer = client.with(() => {
-  Authroization: window.localStorage.getItem('bearerToken')
+  Authorization: window.localStorage.getItem('bearerToken')
 }) // or whatever logic is in your app
 
 const userResource = clientBearer.path('users')
 
 export default {
   users: {
-    read: (query) => userResource.query(query).get(),
+    list: (query) => userResource.query(query).get(),
     create: (user) => userResource.post(user),
   },
   user: (id) => ({
@@ -77,12 +77,28 @@ export default {
       userResource.path(id).path('avatar').decode('image/png').get(),
     posts: {
       // default values
-      get: (query = { showDeleted: true }) =>
+      list: (query = { showDeleted: true }) =>
         userResource.path(id).path('posts').query(query).get(),
       create: (data) => userResource.path(id).path('posts').post(post),
+
+      // and so on
     },
   }),
 }
+```
+
+```javascript
+import client from './client'
+
+const users = await client.users.list()
+
+const foo = await client.user('foo')
+
+const fooUser = await foo.read()
+const fooAvatar = await foo.avatar()
+const fooPosts = await foo.posts.list({ showDeleted: false })
+
+await foo.posts.create({ title: 'hello world', body: 'Hello to everyone!' })
 ```
 
 ## :cool: User Requerest in NodeJs
