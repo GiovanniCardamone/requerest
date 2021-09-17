@@ -66,18 +66,20 @@ const userResource = clientBearer.path('users')
 
 export default {
   users: {
-    get: (query) => userResource.query(query).get(),
-    post: (user) => userResource.post(user),
+    read: (query) => userResource.query(query).get(),
+    create: (user) => userResource.post(user),
   },
   user: (id) => ({
-    get: () => userResource.path(id).get(),
-    patch: (data) => userResource.path(id).patch(data),
+    read: () => userResource.path(id).get(),
+    update: (data) => userResource.path(id).patch(data),
     delete: () => userResource.path(id).delete(),
-    postsResource: {
+    avatar: () =>
+      userResource.path(id).path('avatar').decode('image/png').get(),
+    posts: {
       // default values
       get: (query = { showDeleted: true }) =>
         userResource.path(id).path('posts').query(query).get(),
-      post: (data) => userResource.path(id).path('posts').post(post),
+      create: (data) => userResource.path(id).path('posts').post(post),
     },
   }),
 }
