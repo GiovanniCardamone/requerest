@@ -114,8 +114,8 @@ npm i node-fetch
 
 ## :books: Documentation
 
-[Full Documentation](https://giovannicardam.one/polyfull)
+[Full Documentation](https://giovannicardam.one/reuerest)
 
 ## :label: License
 
-[MIT](https://github.com/GiovanniCardamone/polyfull/blob/main/LICENSE)
+[MIT](https://github.com/GiovanniCardamone/reuerest/blob/main/LICENSE)
