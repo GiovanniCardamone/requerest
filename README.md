@@ -28,32 +28,31 @@ a request have to be done, this library have tools to build your client, so you 
 npm install requerest
 ```
 
-## :rocket: Usage
+## :rocket: Simple Usage
 
 a simple example how to build a client with requerest
 
 ```javascript
-const http = new RequeRest('https://myserver.com')
-
+// this is just an Headers object
 const authorization = () => {
   Authorization: 'Bearer my.bearer.token'
 }
 
-// GET https://myserver.com/users?banned=false
-// headers: { 'Authorization': 'Bearer my.bearer.token', 'Accept': 'application/json' }
-// response is Object default parsed as JSON of Response Body
-const users = await http
-  .with(authorization)
-  .query({ banned: false })
-  .get('users')
+const client = new RequeRest('http://localhost')
+const info = await client.get('info') // GET http://localhost/info
 
-// GET http://myserver.com/logo.png
-// headers: { 'Accept': 'application/xml' }
-// respon
-const resource = await http.decode('xml').get('resource.xml')
+const authorizedClient = client.with(authorization)
+const userResource = authorizedClient.path('users')
+const userPostsResource = (id: string) => userResource.path(`${id}/posts`)
+
+const users = await userResource.query({ banned: false }).get() // GET http://localhost/users?banned=false { Authorization: 'Bearer my.bearer.token' }
+const foo = await userResource.get('foo') // GET http://localhost/users/foo { Authorization: 'Bearer my.bearer.token' }
+
+const fooAvatar = await userResource.decode('image/png').get('foo/avatar') // GET http://localhost/users/foo/avatar { Authorization: 'Bearer my.bearer.token' }
+const fooPosts = await userPostResource(foo.id).get() // GET http://localhosts/users/foo/posts { Authorization: 'Bearer my.bearer.token' }
 ```
 
-## :: User Requerest in NodeJs
+## :cool: User Requerest in NodeJs
 
 RequeRest is using `fetch` interface, so to use in node you have
 to install node-fetch.
