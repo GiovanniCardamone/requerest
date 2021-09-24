@@ -6,8 +6,6 @@
 
 ![JavaScript](https://img.shields.io/badge/ES6-Supported-yellow.svg?style=for-the-badge&logo=JavaScript) ![TypeScript](https://img.shields.io/badge/TypeScript-Supported-blue.svg?style=for-the-badge&logo=Typescript)
 
-![EcmaScript](https://img.shields.io/badge/ECMAScript-2021-lightgrey?url=https://262.ecma-international.org/12.0/)
-
 [![CI](https://github.com/GiovanniCardamone/requerest/actions/workflows/npm-ci.yml/badge.svg)](https://github.com/GiovanniCardamone/requerest/actions/workflows/npm-ci.yml)
 [![Coverage Status](https://coveralls.io/repos/github/GiovanniCardamone/requerest/badge.svg?branch=main)](https://coveralls.io/github/GiovanniCardamone/requerest?branch=main)
 [![Known Vulnerabilities](https://snyk.io/test/github/GiovanniCardamone/requerest/badge.svg)](https://snyk.io/test/github/GiovanniCardamone/requerest)
@@ -16,11 +14,8 @@
 
 </div>
 
-RequeRest is a library intended to simplify the interaction from client to server. A lot of effort is put each time
-a request have to be done, this library have tools to build your client, so you don't have to
-
-> :warning: Note: this library is focues on "application/json" content type, so, you can
-> the library will assume this content-type is used, if you need another serialization method user raw fetch or another library
+RequeRest is a library intended to build http rest client, it's made to be simple, and to
+compose property
 
 ## :package: Installation
 
@@ -62,29 +57,34 @@ const clientBearer = client.with(() => {
   Authorization: window.localStorage.getItem('bearerToken')
 }) // or whatever logic is in your app
 
-const userResource = clientBearer.path('users')
+const usersResource = clientBearer.path('users')
 
 export default {
   users: {
-    list: (query) => userResource.query(query).get(),
-    create: (user) => userResource.post(user),
+    list: (query) => usersResource.query(query).get(),
+    create: (user) => usersResource.post(user),
   },
-  user: (id) => ({
-    read: () => userResource.path(id).get(),
-    update: (data) => userResource.path(id).patch(data),
-    delete: () => userResource.path(id).delete(),
-    avatar: () =>
-      userResource.path(id).path('avatar').decode('image/png').get(),
-    posts: {
-      // default values
-      list: (query = { showDeleted: true }) =>
-        userResource.path(id).path('posts').query(query).get(),
-      create: (data) => userResource.path(id).path('posts').post(post),
+  user: (id) => () => {
+    const userResource = usersResource.path(id)
 
-      // and so on
-    },
-  }),
+    return {
+      read: () => userResource.get(),
+      update: (data) => userResource.patch(data),
+      delete: () => userResource.delete(),
+      avatar: () => userResource.path('avatar').decode('image/png').with({ ciao: 'mondo' }).get(),
+      posts: {
+        // default values
+        list: (query = { showDeleted: true }) =>
+          userResource.path('posts').query(query).get(),
+        create: (data) => userResource.path('posts').post(post),
+
+        // and so on
+      },
+    }
+  },
 }
+
+await client.user('foo').posts.list()
 ```
 
 ```javascript

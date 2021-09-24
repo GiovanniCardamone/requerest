@@ -1,7 +1,7 @@
 import sinon from 'sinon'
 import { expect } from 'chai'
-import RequeRest from '../src'
-import { MissingDecoderError, MissingEncoderError } from '../src/errors'
+import RequeRest, { MissingDecoderError, MissingEncoderError } from '../src'
+// import { MissingDecoderError, MissingEncoderError } from '../src/errors'
 
 before(async () => {
 	global.fetch = require('node-fetch')

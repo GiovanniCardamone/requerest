@@ -6,22 +6,11 @@ export class UnparsableResponseError extends Error {
 	}
 }
 
-export class MissingEncoderError extends Error {
-	constructor(requerest: RequeRest, type: RequeRestOptions['encode']) {
-		super(
-			`parser error: no encoder "${type}", availables: ${Object.keys(
-				requerest.options.decoders ?? []
-			)}`
-		)
-	}
-}
+export async function parseError(
+	requerest: RequeRest,
+	error: any
+): Promise<never> {
+	// pass
 
-export class MissingDecoderError extends Error {
-	constructor(requerest: RequeRest, type: RequeRestOptions['encode']) {
-		super(
-			`parser error: no decoder "${type}", availables: ${Object.keys(
-				requerest.options.encoders ?? []
-			)}`
-		)
-	}
+	throw new Error()
 }

@@ -1,6 +1,7 @@
-import { MissingDecoderError, MissingEncoderError } from './errors'
+import { parseError } from './errors'
 import { parseResponse } from './response'
 import { buildUrl, clearBaseUrl, clearPath } from './url'
+import type { RequeRestResponse } from './response'
 
 const f =
 	typeof window !== 'undefined'
@@ -9,18 +10,67 @@ const f =
 		? global.fetch
 		: require('node-fetch')
 
+export class MissingEncoderError extends Error {
+	constructor(requerest: RequeRest, type: RequeRestOptions['encode']) {
+		super(
+			`parser error: no encoder "${type}", availables: ${Object.keys(
+				requerest.options.decoders ?? []
+			)}`
+		)
+	}
+}
+
+export class MissingDecoderError extends Error {
+	constructor(requerest: RequeRest, type: RequeRestOptions['encode']) {
+		super(
+			`parser error: no decoder "${type}", availables: ${Object.keys(
+				requerest.options.encoders ?? []
+			)}`
+		)
+	}
+}
+
 export interface RequeRestOptions {
+	/**
+	 * test
+	 */
 	queryArrayEncoding?: 'none' | 'brackets' | 'comma'
+
+	/**
+	 *
+	 */
 	headers?: HeadersObject
+
+	/**
+	 *
+	 */
 	query?: QueryObject
+
+	/**
+	 *
+	 */
 	encode?: string
+
+	/**
+	 *
+	 */
 	decode?: string
+
+	/**
+	 *
+	 */
 	encoders?: {
-		[key: string]: (stream: ReadableStream) => any
+		[key: string]: (data: any) => RequestInit['body']
 	}
+
+	/**
+	 *
+	 */
 	decoders?: {
-		[key: string]: (stream: ReadableStream) => any
+		[key: string]: (response: Response) => any
 	}
+
+	errorDecode?: string
 }
 
 export interface HeadersObject {
@@ -38,13 +88,13 @@ export type BaseUrl = `http://${string}` | `https://${string}`
 export type UrlPath = string
 
 const defaultEncoders: RequeRestOptions['encoders'] = {
-	text: String,
-	json: JSON.stringify,
+	'text/plain': String,
+	'application/json': JSON.stringify,
 }
 
 const defaultDecoders: RequeRestOptions['decoders'] = {
-	text: String,
-	json: JSON.stringify,
+	'text/plain': async (data) => await data.text(),
+	'application/json': async (data) => await data.json(),
 }
 
 export default class RequeRest {
@@ -60,6 +110,7 @@ export default class RequeRest {
 				decode: 'application/json',
 				encoders: { ...defaultEncoders },
 				decoders: { ...defaultDecoders },
+				errorDecode: 'application/json',
 			},
 			...{
 				...options,
@@ -75,6 +126,22 @@ export default class RequeRest {
 		}
 	}
 
+	/**
+	 *
+	 * @returns
+	 */
+	config(options: RequeRestOptions) {
+		return new RequeRest(this.baseUrl, {
+			...this.options,
+			...options,
+		})
+	}
+
+	/**
+	 *
+	 * @param headers
+	 * @returns
+	 */
 	with(...headers: Array<HeadersObject | (() => HeadersObject)>) {
 		const resolvedHeaders = headers
 			.map((h) => (typeof h === 'function' ? h() : h))
@@ -95,6 +162,11 @@ export default class RequeRest {
 		})
 	}
 
+	/**
+	 *
+	 * @param query
+	 * @returns
+	 */
 	query(query: QueryObject) {
 		return new RequeRest(this.baseUrl, {
 			...this.options,
@@ -102,6 +174,11 @@ export default class RequeRest {
 		})
 	}
 
+	/**
+	 *
+	 * @param type
+	 * @returns
+	 */
 	encode(type: NonNullable<RequeRestOptions['encode']>) {
 		if (type in this.options.encoders === false) {
 			throw new MissingEncoderError(this, type)
@@ -113,6 +190,11 @@ export default class RequeRest {
 		})
 	}
 
+	/**
+	 *
+	 * @param type
+	 * @returns
+	 */
 	decode(type: NonNullable<RequeRestOptions['decode']>) {
 		if (type in this.options.decoders === false) {
 			throw new MissingDecoderError(this, type)
@@ -124,6 +206,11 @@ export default class RequeRest {
 		})
 	}
 
+	/**
+	 *
+	 * @param path
+	 * @returns
+	 */
 	path(path: UrlPath) {
 		return new RequeRest(
 			`${clearBaseUrl(this.baseUrl)}${clearPath(path)}` as BaseUrl,
@@ -131,8 +218,17 @@ export default class RequeRest {
 		)
 	}
 
-	async get<T = unknown>(urlPath: UrlPath): Promise<T> {
-		return await parseResponse<T>(this, await f(buildUrl(this, urlPath)))
+	/**
+	 *
+	 * @param urlPath
+	 * @returns
+	 */
+	async get<T = unknown>(urlPath?: UrlPath): Promise<RequeRestResponse<T>> {
+		try {
+			return await parseResponse<T>(this, await f(buildUrl(this, urlPath)))
+		} catch (error) {
+			return await parseError(this, error)
+		}
 	}
 
 	// put<T>(path: UrlPath, body: unknown): T {}
