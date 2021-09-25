@@ -2,13 +2,9 @@ import { parseError } from './errors'
 import { parseResponse } from './response'
 import { buildUrl, clearBaseUrl, clearPath } from './url'
 import type { RequeRestResponse } from './response'
+import { fromWindowOrNode } from './utils'
 
-const f =
-	typeof window !== 'undefined'
-		? window.fetch
-		: typeof global.fetch !== 'undefined'
-		? global.fetch
-		: require('node-fetch')
+const f = fromWindowOrNode('fetch', 'node-fetch')
 
 export class MissingEncoderError extends Error {
 	constructor(requerest: RequeRest, type: RequeRestOptions['encode']) {
