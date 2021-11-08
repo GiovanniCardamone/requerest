@@ -3,11 +3,20 @@ import { parseResponse } from '../src/response'
 
 import { Readable } from 'stream'
 import { STATUS_CODES } from 'http'
-import { Headers } from 'node-fetch'
+import { fromWindowOrNode } from '../src/utils'
 
-const D =
-	// eslint-disable-next-line @typescript-eslint/no-var-requires
-	typeof window !== 'undefined' ? window.DOMParser : require('xmldom').DOMParser
+const D = fromWindowOrNode<typeof window.DOMParser>(
+	'DOMParser',
+	'xmldom',
+	'DOMParser'
+)
+const H = fromWindowOrNode<typeof window.Headers>(
+	'Headers',
+	'node-fetch',
+	'Headers'
+)
+
+console.log({ D, H })
 
 function createMockResponse(
 	url: string,
@@ -83,7 +92,7 @@ function createMockResponse(
 		status,
 		statusText: STATUS_CODES[status] as string,
 		redirected: false,
-		headers: new Headers(),
+		headers: new H(),
 		url,
 		ok: status >= 200 && status < 300,
 		type: 'basic',

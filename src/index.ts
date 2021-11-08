@@ -4,7 +4,7 @@ import { parseResponse } from './response'
 import { buildUrl, clearBaseUrl, clearPath } from './url'
 import { fromWindowOrNode } from './utils'
 
-const f = fromWindowOrNode('fetch', 'node-fetch')
+const f = fromWindowOrNode<typeof fetch>('fetch', 'node-fetch')
 
 export class MissingEncoderError extends Error {
 	constructor(requerest: RequeRest, type: RequeRestOptions['encode']) {

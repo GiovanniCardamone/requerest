@@ -5,19 +5,20 @@
  * @param moduleName module name
  * @returns module from Window[name] or require(name)
  */
-export function fromWindowOrNode<K extends keyof Window>(
-	name: K,
-	moduleName: string
-): Window[K] | never {
+export function fromWindowOrNode<K>(
+	name: string,
+	moduleName: string,
+	moduleItem?: string
+): K | never {
 	if (typeof window !== 'undefined') {
 		// browser
-		if (typeof window[name] === 'undefined') {
+		if (typeof window[name as keyof Window] === 'undefined') {
 			throw new Error(
 				`(Browser): 'window.${name}' is not in browser, should be polyfilled ?`
 			)
 		}
 
-		return window[name]
+		return window[name as keyof Window]
 	} else {
 		// node
 
@@ -28,7 +29,9 @@ export function fromWindowOrNode<K extends keyof Window>(
 		}
 
 		try {
-			return require(moduleName)
+			// eslint-disable-next-line
+			const module = require(moduleName)
+			return moduleItem ? module[moduleItem] : module
 		} catch (e) {
 			console.error(e)
 			throw new Error(`(Node): did you forget to install '${moduleName}' ?`)
