@@ -1,4 +1,8 @@
-# 0.1.0 (2021-11-08)
+## [0.1.1](https://github.com/GiovanniCardamone/requerest/compare/v0.1.0...v0.1.1) (2021-11-08)
+
+
+
+# [0.1.0](https://github.com/GiovanniCardamone/requerest/compare/8e51bcdd05cd1778df84b79cd8a6a95f3041c158...v0.1.0) (2021-11-08)
 
 
 ### Bug Fixes
