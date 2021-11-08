@@ -1,7 +1,7 @@
-import { parseError } from './errors'
+import { encodeBody } from './encode'
+import type { RequeRestResponse } from './response'
 import { parseResponse } from './response'
 import { buildUrl, clearBaseUrl, clearPath } from './url'
-import type { RequeRestResponse } from './response'
 import { fromWindowOrNode } from './utils'
 
 const f = fromWindowOrNode('fetch', 'node-fetch')
@@ -19,7 +19,7 @@ export class MissingEncoderError extends Error {
 export class MissingDecoderError extends Error {
 	constructor(requerest: RequeRest, type: RequeRestOptions['encode']) {
 		super(
-			`parser error: no decoder "${type}", availables: ${Object.keys(
+			`parser error: no decoder ${type}, availables: ${Object.keys(
 				requerest.options.encoders ?? []
 			)}`
 		)
@@ -70,7 +70,7 @@ export interface RequeRestOptions {
 }
 
 export interface HeadersObject {
-	[key: string]: string | number
+	[key: string]: string
 }
 
 export interface QueryObject {
@@ -96,17 +96,21 @@ const defaultDecoders: RequeRestOptions['decoders'] = {
 export default class RequeRest {
 	readonly options: Required<RequeRestOptions>
 
-	constructor(readonly baseUrl: BaseUrl, options?: RequeRestOptions) {
+	constructor(readonly baseUrl: string, options?: RequeRestOptions) {
 		this.options = {
 			...{
-				queryArrayEncoding: 'none',
-				headers: {},
-				query: {},
-				encode: 'application/json',
-				decode: 'application/json',
+				queryArrayEncoding: options?.queryArrayEncoding || 'none',
+				headers: {
+					...options?.headers,
+				},
+				query: {
+					...options?.query,
+				},
+				encode: options?.encode || 'application/json',
+				decode: options?.decode || 'application/json',
 				encoders: { ...defaultEncoders },
 				decoders: { ...defaultDecoders },
-				errorDecode: 'application/json',
+				errorDecode: options?.errorDecode || 'application/json',
 			},
 			...{
 				...options,
@@ -183,6 +187,10 @@ export default class RequeRest {
 		return new RequeRest(this.baseUrl, {
 			...this.options,
 			encode: type,
+			headers: {
+				...this.options.headers,
+				'Content-Type': type,
+			},
 		})
 	}
 
@@ -199,6 +207,10 @@ export default class RequeRest {
 		return new RequeRest(this.baseUrl, {
 			...this.options,
 			decode: type,
+			headers: {
+				...this.options.headers,
+				Accept: type,
+			},
 		})
 	}
 
@@ -219,17 +231,65 @@ export default class RequeRest {
 	 * @param urlPath
 	 * @returns
 	 */
-	async get<T = unknown>(urlPath?: UrlPath): Promise<RequeRestResponse<T>> {
-		try {
-			return await parseResponse<T>(this, await f(buildUrl(this, urlPath)))
-		} catch (error) {
-			return await parseError(this, error)
-		}
+	async get<T = unknown>(): Promise<RequeRestResponse<T>> {
+		return await parseResponse<T>(
+			this,
+			await f(buildUrl(this), {
+				method: 'get',
+				headers: this.options.headers,
+			})
+		)
 	}
 
-	// put<T>(path: UrlPath, body: unknown): T {}
-	// patch<T>(path: UrlPath, body: unknown): T {}
-	// post<T>(path: UrlPath, body: unknown): T {}
-	// delete<T>(path: UrlPath, body: unknown): T {}
-	// call<T>(method: string, path: UrlPath, body: unknkiwn): T {}
+	async put<T = unknown>(body?: unknown): Promise<RequeRestResponse<T>> {
+		return await parseResponse<T>(
+			this,
+			await f(this.baseUrl, {
+				method: 'put',
+				headers: this.options.headers,
+				body: encodeBody(this, body),
+			})
+		)
+	}
+
+	async patch<T = unknown>(body?: unknown): Promise<RequeRestResponse<T>> {
+		return await parseResponse<T>(
+			this,
+			await f(this.baseUrl, {
+				method: 'patch',
+				headers: this.options.headers,
+				body: encodeBody(this, body),
+			})
+		)
+	}
+
+	async post<T = unknown>(body?: unknown): Promise<RequeRestResponse<T>> {
+		return await parseResponse<T>(
+			this,
+			await f(this.baseUrl, {
+				method: 'post',
+				headers: this.options.headers,
+				body: encodeBody(this, body),
+			})
+		)
+	}
+
+	async delete<T = unknown>(body?: unknown): Promise<RequeRestResponse<T>> {
+		return await parseResponse<T>(
+			this,
+			await f(this.baseUrl, {
+				method: 'delete',
+				headers: this.options.headers,
+				body: encodeBody(this, body),
+			})
+		)
+	}
+
+	// async call<T = unknown>(
+	// 	method: string,
+	// 	path: UrlPath,
+	// 	body: unknown
+	// ): Promise<RequeRestResponse<T>> {}
 }
+
+export { RequeRestResponse }

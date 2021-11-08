@@ -1,4 +1,3 @@
-import { expect } from 'chai'
 import RequeRest from '../src'
 import { parseResponse } from '../src/response'
 
@@ -37,23 +36,24 @@ function createMockResponse(
 		return stream as unknown as ReadableStream<Uint8Array>
 	}
 
-	function arrayBuffer(): Promise<ArrayBuffer> {
-		useBody()
+	// function arrayBuffer(): Promise<ArrayBuffer> {
+	// 	useBody()
 
-		const arrayBuffer = new ArrayBuffer(data.length)
+	// 	const arrayBuffer = new ArrayBuffer(data.length)
 
-		for (let i = 0; i < data.length; i++) {
-			arrayBuffer[i] = data.charCodeAt(i)
-		}
+	// 	for (let i = 0; i < data.length; i++) {
+	// 		// @ts-check
+	// 		arrayBuffer[i] = data.charCodeAt(i)
+	// 	}
 
-		return Promise.resolve(arrayBuffer)
-	}
+	// 	return Promise.resolve(arrayBuffer)
+	// }
 
-	function blob(): Promise<Blob> {
-		useBody()
+	// function blob(): Promise<Blob> {
+	// 	useBody()
 
-		return
-	}
+	// 	return Promise.resolve()
+	// }
 
 	function clone() {
 		return createMockResponse(url, status, data)
@@ -81,7 +81,7 @@ function createMockResponse(
 
 	return {
 		status,
-		statusText: STATUS_CODES[status],
+		statusText: STATUS_CODES[status] as string,
 		redirected: false,
 		headers: new Headers(),
 		url,
@@ -90,14 +90,16 @@ function createMockResponse(
 		bodyUsed,
 		// @ts-expect-error oka
 		body,
-		arrayBuffer,
-		blob,
+		// arrayBuffer,
+		// blob,
 		clone,
 		formData,
 		json,
 		text,
 	}
 }
+
+// function createMockResponseError() {}
 
 describe('parseResponse', () => {
 	describe('valid', () => {
@@ -108,8 +110,8 @@ describe('parseResponse', () => {
 				createMockResponse(http.baseUrl, 200, '{ "status": "ok" }')
 			)
 
-			expect(resp.status).to.be.equal(200)
-			expect(resp.data).to.deep.equal({ status: 'ok' })
+			expect(resp.status).toBe(200)
+			expect(resp.data).toEqual({ status: 'ok' })
 		})
 
 		it('text/plain', async () => {
@@ -120,8 +122,8 @@ describe('parseResponse', () => {
 				createMockResponse(http.baseUrl, 200, '{ "status": "ok" }')
 			)
 
-			expect(resp.status).to.be.equal(200)
-			expect(resp.data).to.deep.equal('{ "status": "ok" }')
+			expect(resp.status).toBe(200)
+			expect(resp.data).toBe('{ "status": "ok" }')
 		})
 
 		it('application/xml', async () => {
@@ -137,8 +139,8 @@ describe('parseResponse', () => {
 				ReturnType<DOMParser['parseFromString']>
 			>(http, createMockResponse(http.baseUrl, 200, '{ "status": "ok" }'))
 
-			expect(resp.status).to.be.equal(200)
-			expect(resp.data.firstChild.nodeValue).to.deep.equal('{ "status": "ok" }')
+			expect(resp.status).toBe(200)
+			expect(resp.data.firstChild?.nodeValue).toBe('{ "status": "ok" }')
 		})
 	})
 

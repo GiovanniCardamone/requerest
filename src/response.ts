@@ -1,29 +1,10 @@
-import type RequeRest from '.'
-import { HeadersObject } from '.'
-import { UnparsableResponseError } from './errors'
+import type RequeRest from './index'
+import { UnparsableResponseError, HttpResponseError } from './errors'
 
 export interface RequeRestResponse<T> {
 	status: number
 	headers: Headers
 	data: T
-}
-
-class HttpError extends Error {
-	constructor(response: Response) {
-		super(`${response.status}: ${response.text()}`)
-	}
-}
-
-class ParseError extends Error {
-	constructor() {
-		super('')
-	}
-}
-
-class CorsError extends Error {
-	constructor() {
-		super('')
-	}
 }
 
 export async function parseResponse<T>(
@@ -50,5 +31,5 @@ export async function parseResponse<T>(
 		}
 	}
 
-	throw new HttpError(response)
+	throw await HttpResponseError.from(response)
 }

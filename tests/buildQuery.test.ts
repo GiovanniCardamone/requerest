@@ -1,4 +1,3 @@
-import { expect } from 'chai'
 import RequeRest from '../src'
 import { buildQuery } from '../src/query'
 
@@ -6,33 +5,31 @@ describe('buildQuery', () => {
 	const http = new RequeRest('http://localhost')
 
 	it('none', async () => {
-		expect(buildQuery(http)).to.be.eq('')
+		expect(buildQuery(http)).toBe('')
 	})
 
 	it('string', async () => {
-		expect(buildQuery(http, { a: 'a', b: 'b' })).to.be.eq('?a=a&b=b')
+		expect(buildQuery(http, { a: 'a', b: 'b' })).toBe('?a=a&b=b')
 	})
 
 	it('numbers', async () => {
-		expect(buildQuery(http, { a: 1, b: 2 })).to.be.eq('?a=1&b=2')
+		expect(buildQuery(http, { a: 1, b: 2 })).toBe('?a=1&b=2')
 	})
 
 	it('booleans', async () => {
-		expect(buildQuery(http, { a: true, b: false })).to.be.eq('?a=true&b=false')
+		expect(buildQuery(http, { a: true, b: false })).toBe('?a=true&b=false')
 	})
 
 	it('multiple', async () => {
-		expect(buildQuery(http, { a: 1, b: 'b', c: true })).to.be.eq(
-			'?a=1&b=b&c=true'
-		)
+		expect(buildQuery(http, { a: 1, b: 'b', c: true })).toBe('?a=1&b=b&c=true')
 	})
 
 	it('undefined', async () => {
-		expect(buildQuery(http, { a: undefined })).to.be.eq('')
+		expect(buildQuery(http, { a: undefined })).toBe('')
 	})
 
 	it('null', async () => {
-		expect(buildQuery(http, { a: null })).to.be.eq('?a=null')
+		expect(buildQuery(http, { a: null })).toBe('?a=null')
 	})
 
 	describe('array', () => {
@@ -42,23 +39,23 @@ describe('buildQuery', () => {
 			})
 
 			it('string', async () => {
-				expect(buildQuery(http, { a: ['b', 'c'] })).to.be.eq('?a[]=b&a[]=c')
+				expect(buildQuery(http, { a: ['b', 'c'] })).toBe('?a[]=b&a[]=c')
 			})
 
 			it('numbers', async () => {
-				expect(buildQuery(http, { a: [1, 2] })).to.be.eq('?a[]=1&a[]=2')
+				expect(buildQuery(http, { a: [1, 2] })).toBe('?a[]=1&a[]=2')
 			})
 
 			it('booleans', async () => {
-				expect(buildQuery(http, { a: [true, false] })).to.be.eq(
+				expect(buildQuery(http, { a: [true, false] })).toBe(
 					'?a[]=true&a[]=false'
 				)
 			})
 
 			it('mixed', async () => {
-				expect(
-					buildQuery(http, { a: ['a', 1, true, undefined, null] })
-				).to.be.eq('?a[]=a&a[]=1&a[]=true&a[]=null')
+				expect(buildQuery(http, { a: ['a', 1, true, undefined, null] })).toBe(
+					'?a[]=a&a[]=1&a[]=true&a[]=null'
+				)
 			})
 		})
 
@@ -68,21 +65,21 @@ describe('buildQuery', () => {
 			})
 
 			it('string', async () => {
-				expect(buildQuery(http, { a: ['b', 'c'] })).to.be.eq('?a=b,c')
+				expect(buildQuery(http, { a: ['b', 'c'] })).toBe('?a=b,c')
 			})
 
 			it('numbers', async () => {
-				expect(buildQuery(http, { a: [1, 2] })).to.be.eq('?a=1,2')
+				expect(buildQuery(http, { a: [1, 2] })).toBe('?a=1,2')
 			})
 
 			it('booleans', async () => {
-				expect(buildQuery(http, { a: [true, false] })).to.be.eq('?a=true,false')
+				expect(buildQuery(http, { a: [true, false] })).toBe('?a=true,false')
 			})
 
 			it('mixed', async () => {
-				expect(
-					buildQuery(http, { a: ['a', 1, true, undefined, null] })
-				).to.be.eq('?a=a,1,true,null')
+				expect(buildQuery(http, { a: ['a', 1, true, undefined, null] })).toBe(
+					'?a=a,1,true,null'
+				)
 			})
 		})
 
@@ -92,23 +89,21 @@ describe('buildQuery', () => {
 			})
 
 			it('string', async () => {
-				expect(buildQuery(http, { a: ['b', 'c'] })).to.be.eq('?a=b&a=c')
+				expect(buildQuery(http, { a: ['b', 'c'] })).toBe('?a=b&a=c')
 			})
 
 			it('numbers', async () => {
-				expect(buildQuery(http, { a: [1, 2] })).to.be.eq('?a=1&a=2')
+				expect(buildQuery(http, { a: [1, 2] })).toBe('?a=1&a=2')
 			})
 
 			it('booleans', async () => {
-				expect(buildQuery(http, { a: [true, false] })).to.be.eq(
-					'?a=true&a=false'
-				)
+				expect(buildQuery(http, { a: [true, false] })).toBe('?a=true&a=false')
 			})
 
 			it('mixed', async () => {
-				expect(
-					buildQuery(http, { a: ['a', 1, true, undefined, null] })
-				).to.be.eq('?a=a&a=1&a=true&a=null')
+				expect(buildQuery(http, { a: ['a', 1, true, undefined, null] })).toBe(
+					'?a=a&a=1&a=true&a=null'
+				)
 			})
 		})
 	})

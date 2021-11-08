@@ -71,7 +71,12 @@ export default {
       read: () => userResource.get(),
       update: (data) => userResource.patch(data),
       delete: () => userResource.delete(),
-      avatar: () => userResource.path('avatar').decode('image/png').with({ ciao: 'mondo' }).get(),
+      avatar: () =>
+        userResource
+          .path('avatar')
+          .decode('image/png')
+          .with({ ciao: 'mondo' })
+          .get(),
       posts: {
         // default values
         list: (query = { showDeleted: true }) =>
@@ -114,8 +119,8 @@ npm i node-fetch
 
 ## :books: Documentation
 
-[Full Documentation](https://giovannicardam.one/reuerest)
+[Full Documentation](https://giovannicardam.one/requerest)
 
 ## :label: License
 
-[MIT](https://github.com/GiovanniCardamone/reuerest/blob/main/LICENSE)
+[MIT](https://github.com/GiovanniCardamone/requerest/blob/main/LICENSE)

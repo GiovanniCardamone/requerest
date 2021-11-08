@@ -30,6 +30,7 @@ export function fromWindowOrNode<K extends keyof Window>(
 		try {
 			return require(moduleName)
 		} catch (e) {
+			console.error(e)
 			throw new Error(`(Node): did you forget to install '${moduleName}' ?`)
 		}
 	}

@@ -2,56 +2,68 @@
   "name": "requerest",
   "version": "0.0.1",
   "description": "browser library to organize http client",
-  "main": "index.js",
+  "main": "dist",
   "private": false,
+  "type": "module",
+  "jest": {
+    "verbose": true,
+    "preset": "ts-jest",
+    "testEnvironment": "node"
+  },
+  "commitlint": {
+    "extends": "@commitlint/config-conventional"
+  },
   "prettier": "@giovannicardamone/prettier-config",
   "eslintConfig": {
     "extends": "@giovannicardamone/eslint-config"
   },
   "scripts": {
-    "cover": "nyc npm run test",
-    "test": "ts-mocha 'tests/**.test.ts'",
+    "cover": "jest --coverage",
+    "test": "jest",
     "lint": "eslint",
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "docs": "docsify generate docs",
-    "docs:watch": "docsify serve docs",
+    "docs": "exit 0",
+    "docs:watch": "exit 1",
     "prepare": "husky install"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/GiovanniCardamone/http-utils-client.git"
+    "url": "git+https://github.com/GiovanniCardamone/requerest.git"
   },
   "author": "Giovanni Cardamone <g.cardamone2@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/GiovanniCardamone/http-utils-client/issues"
+    "url": "https://github.com/GiovanniCardamone/requerest/issues"
   },
-  "homepage": "https://github.com/GiovanniCardamone/http-utils-client#readme",
+  "homepage": "https://github.com/GiovanniCardamone/requerest#readme",
   "devDependencies": {
     "@commitlint/cli": "^13.1.0",
     "@commitlint/config-conventional": "^13.1.0",
     "@giovannicardamone/eslint-config": "^0.4.2",
     "@giovannicardamone/prettier-config": "^0.1.1",
-    "@types/chai": "^4.2.21",
-    "@types/mocha": "^9.0.0",
-    "@types/node": "^16.9.2",
-    "@types/sinon": "^10.0.2",
+    "@types/express": "^4.17.13",
+    "@types/jest": "^27.0.2",
+    "@types/node": "^16.11.6",
+    "@types/web": "^0.0.46",
     "@typescript-eslint/eslint-plugin": "^4.29.0",
     "@typescript-eslint/parser": "^4.29.0",
-    "chai": "^4.3.4",
     "commitlint": "^13.1.0",
+    "docsify": "^4.12.1",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "express": "^4.17.1",
-    "http-class": "^0.3.1",
+    "http-class": "file:../http-class",
     "husky": "^7.0.1",
-    "mocha": "^8.4.0",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.6",
     "nyc": "^15.1.0",
-    "sinon": "^11.1.2",
-    "ts-mocha": "^8.0.0",
+    "ts-jest": "^27.0.7",
+    "ts-node": "^10.4.0",
     "typescript": "^4.3.5",
     "xmldom": "^0.6.0"
+  },
+  "dependencies": {
+    "find-free-ports": "^3.0.0",
+    "jest": "^27.3.1"
   }
 }

@@ -1,10 +1,10 @@
-import type RequeRest from '.'
+import type RequeRest from './index'
 import type {
 	RequeRestOptions,
 	QueryObject,
 	QueryParamValue,
 	QueryParamArrayValue,
-} from '.'
+} from './index'
 
 export function buildQuery(requerest: RequeRest, query?: QueryObject): string {
 	if (query === undefined || Object.keys(query).length === 0) return ''
