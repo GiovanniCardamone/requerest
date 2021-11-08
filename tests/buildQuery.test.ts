@@ -28,6 +28,10 @@ describe('buildQuery', () => {
 		expect(buildQuery(http, { a: undefined })).toBe('')
 	})
 
+	it('multiple undefined', async () => {
+		expect(buildQuery(http, { a: undefined, b: undefined })).toBe('')
+	})
+
 	it('null', async () => {
 		expect(buildQuery(http, { a: null })).toBe('?a=null')
 	})

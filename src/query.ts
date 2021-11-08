@@ -9,15 +9,17 @@ import type {
 export function buildQuery(requerest: RequeRest, query?: QueryObject): string {
 	if (query === undefined || Object.keys(query).length === 0) return ''
 
-	const q = Object.entries(query).reduce<string>(
-		(a, [k, v]) =>
-			`${a}${a.length === 0 ? '?' : '&'}${encodeQueryParam(
-				requerest.options.queryArrayEncoding,
-				k,
-				v
-			)}`,
-		''
-	)
+	const q = Object.entries(query)
+		.filter(([k, v]) => v !== undefined)
+		.reduce<string>(
+			(a, [k, v]) =>
+				`${a}${a.length === 0 ? '?' : '&'}${encodeQueryParam(
+					requerest.options.queryArrayEncoding,
+					k,
+					v
+				)}`,
+			''
+		)
 
 	return q.length === 1 ? '' : q
 }
