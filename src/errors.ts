@@ -1,20 +1,37 @@
 import { HttpError } from 'http-class'
 import RequeRest from './index'
 
-export class UnparsableResponseError extends Error {
-	constructor(requerest: RequeRest, response: Response) {
-		super(`failed request: ${requerest}`)
+class BaseError extends Error {
+	constructor(
+		readonly statusCode: number,
+		readonly name: string,
+		message: string,
+		readonly data?: { [key: string]: any }
+	) {
+		super(message)
 	}
 }
 
-export class HttpResponseError extends Error implements HttpError {
+export class UnprocessableRequestError extends BaseError {
+	constructor(message: string) {
+		super(-1, 'UnprocessableRequest', message)
+	}
+}
+
+export class UnparsableResponseError extends BaseError {
+	constructor(requerest: RequeRest, response: Response) {
+		super(-1, 'UnparsableResponse', `failed request: ${requerest}`)
+	}
+}
+
+export class HttpResponseError extends BaseError implements HttpError {
 	constructor(
 		readonly statusCode: number,
 		name: string,
 		message: string,
 		readonly data?: { [key: string]: any }
 	) {
-		super(`${name} (${statusCode}): ${message}`)
+		super(statusCode, name, message, data)
 	}
 
 	static async from(response: Response) {

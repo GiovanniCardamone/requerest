@@ -1,6 +1,10 @@
 import RequeRest from './index'
 
-export function encodeBody(requerest: RequeRest, body: unknown): any {
+export function encodeBody(requerest: RequeRest, body?: unknown): any {
+	if (body === undefined) {
+		return undefined
+	}
+
 	if (requerest.options.encode in requerest.options.encoders === false) {
 		throw new Error(
 			`missing encoder ${requerest.options.encode}. Available encoders: ${requerest.options.encoders}`

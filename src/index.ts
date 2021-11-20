@@ -1,10 +1,13 @@
 import { encodeBody } from './encode'
+import { UnprocessableRequestError } from './errors'
 import type { RequeRestResponse } from './response'
 import { parseResponse } from './response'
 import { buildUrl, clearBaseUrl, clearPath } from './url'
 import { fromWindowOrNode } from './utils'
 
 const f = fromWindowOrNode<typeof fetch>('fetch', 'node-fetch')
+
+type CheckBeforeFn = () => Error | string | false | undefined
 
 export class MissingEncoderError extends Error {
 	constructor(requerest: RequeRest, type: RequeRestOptions['encode']) {
@@ -67,6 +70,8 @@ export interface RequeRestOptions {
 	}
 
 	errorDecode?: string
+
+	checkBefore?: CheckBeforeFn
 }
 
 export interface HeadersObject {
@@ -93,8 +98,14 @@ const defaultDecoders: RequeRestOptions['decoders'] = {
 	'application/json': async (data) => await data.json(),
 }
 
+type PickOmitOptions<K extends keyof RequeRestOptions> = Omit<
+	Required<RequeRestOptions>,
+	K
+> &
+	Pick<RequeRestOptions, K>
+
 export default class RequeRest {
-	readonly options: Required<RequeRestOptions>
+	readonly options: PickOmitOptions<'checkBefore'>
 
 	constructor(readonly baseUrl: string, options?: RequeRestOptions) {
 		this.options = {
@@ -111,6 +122,7 @@ export default class RequeRest {
 				encoders: { ...defaultEncoders },
 				decoders: { ...defaultDecoders },
 				errorDecode: options?.errorDecode || 'application/json',
+				checkBefore: options?.checkBefore,
 			},
 			...{
 				...options,
@@ -226,70 +238,64 @@ export default class RequeRest {
 		)
 	}
 
+	checkBefore(checkBeforeFn: CheckBeforeFn) {
+		return new RequeRest(this.baseUrl, {
+			...this.options,
+			checkBefore: checkBeforeFn,
+		})
+	}
+
 	/**
 	 *
 	 * @param urlPath
 	 * @returns
 	 */
 	async get<T = unknown>(): Promise<RequeRestResponse<T>> {
-		return await parseResponse<T>(
-			this,
-			await f(buildUrl(this), {
-				method: 'get',
-				headers: this.options.headers,
-			})
-		)
+		return await this.call('get', this.options.headers)
 	}
 
 	async put<T = unknown>(body?: unknown): Promise<RequeRestResponse<T>> {
-		return await parseResponse<T>(
-			this,
-			await f(this.baseUrl, {
-				method: 'put',
-				headers: this.options.headers,
-				body: encodeBody(this, body),
-			})
-		)
+		return await this.call('put', this.options.headers, body)
 	}
 
 	async patch<T = unknown>(body?: unknown): Promise<RequeRestResponse<T>> {
-		return await parseResponse<T>(
-			this,
-			await f(this.baseUrl, {
-				method: 'patch',
-				headers: this.options.headers,
-				body: encodeBody(this, body),
-			})
-		)
+		return await this.call('patch', this.options.headers, body)
 	}
 
 	async post<T = unknown>(body?: unknown): Promise<RequeRestResponse<T>> {
-		return await parseResponse<T>(
-			this,
-			await f(this.baseUrl, {
-				method: 'post',
-				headers: this.options.headers,
-				body: encodeBody(this, body),
-			})
-		)
+		return await this.call('post', this.options.headers, body)
 	}
 
 	async delete<T = unknown>(body?: unknown): Promise<RequeRestResponse<T>> {
+		return await this.call('delete', this.options.headers, body)
+	}
+
+	private async call<T = unknown>(
+		method: string,
+		headers: HeadersObject,
+		body?: any
+	): Promise<RequeRestResponse<T>> {
+		if (this.options.checkBefore !== undefined) {
+			const check = this.options.checkBefore()
+
+			if (typeof check === 'string' && check.length) {
+				throw new UnprocessableRequestError(
+					typeof check === 'string' ? check : 'did not passs checkBefore'
+				)
+			} else if (check instanceof Error) {
+				throw check
+			}
+		}
+
 		return await parseResponse<T>(
 			this,
-			await f(this.baseUrl, {
-				method: 'delete',
-				headers: this.options.headers,
+			await f(buildUrl(this), {
+				method,
+				headers,
 				body: encodeBody(this, body),
 			})
 		)
 	}
-
-	// async call<T = unknown>(
-	// 	method: string,
-	// 	path: UrlPath,
-	// 	body: unknown
-	// ): Promise<RequeRestResponse<T>> {}
 }
 
 export { RequeRestResponse }
