@@ -1,4 +1,4 @@
-import { encodeBody } from './encode'
+import { encodeBody, encodeHeaders } from './encode'
 import { UnprocessableRequestError } from './errors'
 import type { RequeRestResponse } from './response'
 import { parseResponse } from './response'
@@ -75,7 +75,7 @@ export interface RequeRestOptions {
 }
 
 export interface HeadersObject {
-	[key: string]: string
+	[key: string]: string | undefined
 }
 
 export interface QueryObject {
@@ -291,7 +291,7 @@ export default class RequeRest {
 			this,
 			await f(buildUrl(this), {
 				method,
-				headers,
+				headers: encodeHeaders(this, headers),
 				body: encodeBody(this, body),
 			})
 		)

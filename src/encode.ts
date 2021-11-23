@@ -1,4 +1,4 @@
-import RequeRest from './index'
+import RequeRest, { HeadersObject } from './index'
 
 export function encodeBody(requerest: RequeRest, body?: unknown): any {
 	if (body === undefined) {
@@ -12,4 +12,21 @@ export function encodeBody(requerest: RequeRest, body?: unknown): any {
 	}
 
 	return requerest.options.encoders[requerest.options.encode](body)
+}
+
+export function encodeHeaders(
+	requerest: RequeRest,
+	headers?: HeadersObject
+): any {
+	if (headers === undefined) {
+		return undefined
+	}
+
+	return Object.entries(headers).reduce((acc, [key, val]) => {
+		if (val !== undefined) {
+			acc[key] = val
+		}
+
+		return acc
+	}, {} as HeadersObject)
 }
