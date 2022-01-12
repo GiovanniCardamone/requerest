@@ -1,3 +1,13 @@
+# [0.3.0](https://github.com/GiovanniCardamone/requerest/compare/v0.2.0...v0.3.0) (2022-01-12)
+
+
+### Features
+
+* encode headers ([81f4a6f](https://github.com/GiovanniCardamone/requerest/commit/81f4a6fc5f9062cd810e9a32ce2e47523bb293b3))
+* mutate response ([2296dd5](https://github.com/GiovanniCardamone/requerest/commit/2296dd5a4a44887aebc64def00cc2ddd296f0ffc))
+
+
+
 # [0.2.0](https://github.com/GiovanniCardamone/requerest/compare/v0.1.1...v0.2.0) (2021-11-20)
 
 
