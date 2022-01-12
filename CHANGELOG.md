@@ -1,3 +1,12 @@
+# [0.2.0](https://github.com/GiovanniCardamone/requerest/compare/v0.1.1...v0.2.0) (2021-11-20)
+
+
+### Features
+
+* added checkBefore function ([d407264](https://github.com/GiovanniCardamone/requerest/commit/d407264c8b8c181766a6de442132cce34d63ed35))
+
+
+
 ## [0.1.1](https://github.com/GiovanniCardamone/requerest/compare/v0.1.0...v0.1.1) (2021-11-08)
 
 
