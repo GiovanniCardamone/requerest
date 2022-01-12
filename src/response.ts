@@ -25,9 +25,9 @@ export async function parseResponse<T>(
 		return {
 			status: response.status,
 			headers: response.headers,
-			data: (await requerest.options.decoders[requerest.options.decode](
-				response
-			)) as unknown as T,
+			data: requerest.options.mutateResponse(
+				await requerest.options.decoders[requerest.options.decode](response)
+			) as unknown as T,
 		}
 	}
 

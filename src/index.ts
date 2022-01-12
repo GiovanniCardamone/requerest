@@ -4,16 +4,18 @@ import type { RequeRestResponse } from './response'
 import { parseResponse } from './response'
 import { buildUrl, clearBaseUrl, clearPath } from './url'
 import { fromWindowOrNode } from './utils'
+import * as codecs from './codecs'
 
 const f = fromWindowOrNode<typeof fetch>('fetch', 'node-fetch')
 
 type CheckBeforeFn = () => Error | string | false | undefined
+type MutateResponseFn = (data: any) => any
 
 export class MissingEncoderError extends Error {
 	constructor(requerest: RequeRest, type: RequeRestOptions['encode']) {
 		super(
 			`parser error: no encoder "${type}", availables: ${Object.keys(
-				requerest.options.decoders ?? []
+				requerest.options.encoders ?? []
 			)}`
 		)
 	}
@@ -23,7 +25,7 @@ export class MissingDecoderError extends Error {
 	constructor(requerest: RequeRest, type: RequeRestOptions['encode']) {
 		super(
 			`parser error: no decoder ${type}, availables: ${Object.keys(
-				requerest.options.encoders ?? []
+				requerest.options.decoders ?? []
 			)}`
 		)
 	}
@@ -72,6 +74,8 @@ export interface RequeRestOptions {
 	errorDecode?: string
 
 	checkBefore?: CheckBeforeFn
+
+	mutateResponse?: MutateResponseFn
 }
 
 export interface HeadersObject {
@@ -91,11 +95,20 @@ export type UrlPath = string
 const defaultEncoders: RequeRestOptions['encoders'] = {
 	'text/plain': String,
 	'application/json': JSON.stringify,
+	'application/x-www-form-urlencoded': codecs.encode_xwwwformurlencoded,
 }
 
 const defaultDecoders: RequeRestOptions['decoders'] = {
 	'text/plain': async (data) => await data.text(),
 	'application/json': async (data) => await data.json(),
+	'image/jpeg': (data) => {
+		const image = new Image()
+		data.blob().then((data) => {
+			image.src = URL.createObjectURL(data)
+		})
+
+		return image
+	},
 }
 
 type PickOmitOptions<K extends keyof RequeRestOptions> = Omit<
@@ -123,6 +136,7 @@ export default class RequeRest {
 				decoders: { ...defaultDecoders },
 				errorDecode: options?.errorDecode || 'application/json',
 				checkBefore: options?.checkBefore,
+				mutateResponse: options?.mutateResponse || ((data) => data),
 			},
 			...{
 				...options,
@@ -150,6 +164,7 @@ export default class RequeRest {
 	}
 
 	/**
+	 * todo: should store function and actually call on execute?
 	 *
 	 * @param headers
 	 * @returns
@@ -242,6 +257,17 @@ export default class RequeRest {
 		return new RequeRest(this.baseUrl, {
 			...this.options,
 			checkBefore: checkBeforeFn,
+		})
+	}
+
+	uri(): string {
+		return buildUrl(this)
+	}
+
+	mutateResponse(mutateResponse: MutateResponseFn) {
+		return new RequeRest(this.baseUrl, {
+			...this.options,
+			mutateResponse: mutateResponse,
 		})
 	}
 
