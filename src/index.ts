@@ -324,4 +324,4 @@ export default class RequeRest {
 	}
 }
 
-export { RequeRestResponse }
+export { RequeRest, RequeRestResponse }
