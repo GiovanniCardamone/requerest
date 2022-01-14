@@ -1,3 +1,12 @@
+# [0.4.0](https://github.com/GiovanniCardamone/requerest/compare/v0.3.0...v0.4.0) (2022-01-14)
+
+
+### Features
+
+* exporting also not as default ([2440853](https://github.com/GiovanniCardamone/requerest/commit/24408538ba1ee6dd611d05a41396eda1c8612bd7))
+
+
+
 # [0.3.0](https://github.com/GiovanniCardamone/requerest/compare/v0.2.0...v0.3.0) (2022-01-12)
 
 
