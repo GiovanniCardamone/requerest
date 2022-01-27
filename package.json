@@ -3,6 +3,7 @@
   "version": "0.3.0",
   "description": "browser library to organize http client",
   "main": "dist",
+  "types": "dist",
   "private": false,
   "type": "module",
   "jest": {
