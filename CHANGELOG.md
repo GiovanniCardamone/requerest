@@ -1,3 +1,12 @@
+## [0.4.1](https://github.com/GiovanniCardamone/requerest/compare/v0.4.0...v0.4.1) (2022-01-27)
+
+
+### Bug Fixes
+
+* added package.json types property ([820c95d](https://github.com/GiovanniCardamone/requerest/commit/820c95dfdb2ac0ff3d5e94e43dd09c03f146f33d))
+
+
+
 # [0.4.0](https://github.com/GiovanniCardamone/requerest/compare/v0.3.0...v0.4.0) (2022-01-14)
 
 
