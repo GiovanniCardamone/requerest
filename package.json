@@ -5,7 +5,6 @@
   "main": "dist",
   "types": "dist",
   "private": false,
-  "type": "module",
   "jest": {
     "verbose": true,
     "preset": "ts-jest",

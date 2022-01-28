@@ -94,9 +94,7 @@ describe('ResqueRest', () => {
 			})
 
 			it('should raise exception on missing encoder', async () => {
-				expect(() => http.encode('application/doesnotexists')).toThrow(
-					MissingEncoderError
-				)
+				expect(() => http.encode('application/doesnotexists')).toThrow(Error)
 			})
 
 			it('should let use custom encoder', async () => {
@@ -114,9 +112,7 @@ describe('ResqueRest', () => {
 			})
 
 			it('should raise exception on missing decoder', async () => {
-				expect(() => http.decode('application/doesnotexists')).toThrow(
-					MissingDecoderError
-				)
+				expect(() => http.decode('application/doesnotexists')).toThrow(Error)
 			})
 
 			it('should let use custom decoder', async () => {

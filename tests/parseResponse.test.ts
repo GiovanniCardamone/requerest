@@ -1,4 +1,4 @@
-import RequeRest from '../src'
+import RequeRest, { MissingDecoderError } from '../src'
 import { parseResponse } from '../src/response'
 
 import { Readable } from 'stream'
@@ -27,7 +27,10 @@ function createMockResponse(
 
 	function useBody() {
 		if (bodyUsed) {
-			throw new Error('cannot clone body after it is used')
+			throw new MissingDecoderError(
+				new RequeRest('https://doesntmatter.com'),
+				'cannot clone body after it is used'
+			)
 		}
 
 		bodyUsed = true

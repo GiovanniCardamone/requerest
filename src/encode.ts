@@ -1,4 +1,4 @@
-import RequeRest, { HeadersObject } from './index'
+import RequeRest, { HeadersObject, MissingEncoderError } from './index'
 
 export function encodeBody(requerest: RequeRest, body?: unknown): any {
 	if (body === undefined) {
@@ -6,7 +6,8 @@ export function encodeBody(requerest: RequeRest, body?: unknown): any {
 	}
 
 	if (requerest.options.encode in requerest.options.encoders === false) {
-		throw new Error(
+		throw new MissingEncoderError(
+			requerest,
 			`missing encoder ${requerest.options.encode}. Available encoders: ${requerest.options.encoders}`
 		)
 	}
