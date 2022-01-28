@@ -1,3 +1,12 @@
+## [0.4.2](https://github.com/GiovanniCardamone/requerest/compare/v0.4.1...v0.4.2) (2022-01-28)
+
+
+### Bug Fixes
+
+* attempt target es5 ([bb3ff0a](https://github.com/GiovanniCardamone/requerest/commit/bb3ff0ab3fb539aca2265eceb43e46f190e56a96))
+
+
+
 ## [0.4.1](https://github.com/GiovanniCardamone/requerest/compare/v0.4.0...v0.4.1) (2022-01-27)
 
 
