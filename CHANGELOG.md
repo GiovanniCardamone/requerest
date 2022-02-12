@@ -1,3 +1,7 @@
+## [0.4.3](https://github.com/GiovanniCardamone/requerest/compare/v0.4.2...v0.4.3) (2022-01-28)
+
+
+
 ## [0.4.2](https://github.com/GiovanniCardamone/requerest/compare/v0.4.1...v0.4.2) (2022-01-28)
 
 
