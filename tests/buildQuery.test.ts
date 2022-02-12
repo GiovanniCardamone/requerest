@@ -24,6 +24,12 @@ describe('buildQuery', () => {
 		expect(buildQuery(http, { a: 1, b: 'b', c: true })).toBe('?a=1&b=b&c=true')
 	})
 
+	it('multiple with & in value', async () => {
+		expect(buildQuery(http, { test: 'hello&world' })).toBe(
+			'?test=hello%26world'
+		)
+	})
+
 	it('undefined', async () => {
 		expect(buildQuery(http, { a: undefined })).toBe('')
 	})

@@ -35,7 +35,11 @@ export function encodeQueryParam(
 }
 
 export function encodeQueryParamValue(k: string, v: QueryParamValue): string {
-	return v !== undefined ? `${k}=${String(v)}` : ''
+	return v !== undefined
+		? v === null
+			? `${k}=null`
+			: `${k}=${encodeURIComponent(v)}`
+		: ''
 }
 
 export function encodeQueryParamArrayValue(
