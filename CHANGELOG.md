@@ -1,3 +1,12 @@
+## [0.4.5](https://github.com/GiovanniCardamone/requerest/compare/v0.4.4...v0.4.5) (2022-03-08)
+
+
+### Bug Fixes
+
+* parsing Response Error Data ([07efdd0](https://github.com/GiovanniCardamone/requerest/commit/07efdd0ea3656ab7c9ee3b6f0fe017d9b805bb95))
+
+
+
 ## [0.4.4](https://github.com/GiovanniCardamone/requerest/compare/v0.4.3...v0.4.4) (2022-02-12)
 
 
