@@ -1,6 +1,6 @@
 {
   "name": "requerest",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "browser library to organize http client",
   "main": "dist",
   "types": "dist",

@@ -1,3 +1,12 @@
+## [0.4.4](https://github.com/GiovanniCardamone/requerest/compare/v0.4.3...v0.4.4) (2022-02-12)
+
+
+### Bug Fixes
+
+* encode uri component querystring special characters ([12ff7aa](https://github.com/GiovanniCardamone/requerest/commit/12ff7aa4e888d83e39cea41dbadf2b1963577e98))
+
+
+
 ## [0.4.3](https://github.com/GiovanniCardamone/requerest/compare/v0.4.2...v0.4.3) (2022-01-28)
 
 
