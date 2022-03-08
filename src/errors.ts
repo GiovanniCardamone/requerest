@@ -25,6 +25,8 @@ export class UnparsableResponseError extends BaseError {
 }
 
 export class HttpResponseError extends BaseError implements HttpError {
+	[key: string]: any
+
 	constructor(
 		readonly statusCode: number,
 		name: string,
@@ -32,15 +34,12 @@ export class HttpResponseError extends BaseError implements HttpError {
 		readonly data?: { [key: string]: any }
 	) {
 		super(statusCode, name, message, data)
+		Object.assign(this, data)
 	}
 
 	static async from(response: Response) {
-		const payload = await response.json()
-		return new HttpError(
-			response.status,
-			payload.name,
-			payload.message,
-			payload.data
-		)
+		const { name, message, ...data } = await response.json()
+
+		return new HttpResponseError(response.status, name, message, data)
 	}
 }
